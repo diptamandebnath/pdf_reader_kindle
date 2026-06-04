@@ -1,23 +1,38 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Kindle PDF Reader</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Flip Book Reader</title>
 
     <link rel="stylesheet" href="style.css">
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
+    <!-- StPageFlip -->
+    <script src="https://cdn.jsdelivr.net/npm/page-flip/dist/js/page-flip.browser.min.js"></script>
 </head>
 <body>
 
-<div class="top-bar">
-    <input type="file" id="pdf-upload" accept=".pdf">
-</div>
+    <header>
+        <h1>PDF Flip Book Reader</h1>
 
-<div id="flipbook"></div>
+        <input type="file"
+               id="pdf-upload"
+               accept="application/pdf">
 
-<script src="script.js"></script>
+        <div class="controls">
+            <button id="prevBtn">◀ Previous</button>
+            <button id="nextBtn">Next ▶</button>
+        </div>
+    </header>
+
+    <div id="book-container">
+        <div id="flipbook"></div>
+    </div>
+
+    <script src="script.js"></script>
 
 </body>
 </html>
