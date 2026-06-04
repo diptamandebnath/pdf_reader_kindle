@@ -1,54 +1,94 @@
 const upload = document.getElementById("pdf-upload");
-const flipbook = document.getElementById("flipbook");
 
-upload.addEventListener("change", async function(e){
+let pageFlip = null;
 
-    flipbook.innerHTML = "";
+upload.addEventListener("change", async (e) => {
 
     const file = e.target.files[0];
 
-    if(!file) return;
+    if (!file) return;
 
-    const fileReader = new FileReader();
+    const arrayBuffer = await file.arrayBuffer();
 
-    fileReader.onload = async function(){
+    const pdf = await pdfjsLib
+        .getDocument({ data: arrayBuffer })
+        .promise;
 
-        const typedarray = new Uint8Array(this.result);
+    const pages = [];
 
-        const pdf = await pdfjsLib.getDocument(typedarray).promise;
+    document.getElementById("flipbook").innerHTML = "";
 
-        for(let pageNum = 1; pageNum <= pdf.numPages; pageNum++){
+    for (let i = 1; i <= pdf.numPages; i++) {
 
-            const page = await pdf.getPage(pageNum);
+        const page = await pdf.getPage(i);
 
-            const viewport = page.getViewport({scale:1.5});
-
-            const pageDiv = document.createElement("div");
-            pageDiv.className = "page";
-
-            const canvas = document.createElement("canvas");
-            const context = canvas.getContext("2d");
-
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
-
-            pageDiv.appendChild(canvas);
-            flipbook.appendChild(pageDiv);
-
-            await page.render({
-                canvasContext: context,
-                viewport: viewport
-            }).promise;
-        }
-
-        $("#flipbook").turn({
-            width:900,
-            height:650,
-            autoCenter:true,
-            gradients:true,
-            acceleration:true
+        const viewport = page.getViewport({
+            scale: 2
         });
-    };
 
-    fileReader.readAsArrayBuffer(file);
+        const canvas = document.createElement("canvas");
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({
+            canvasContext: canvas.getContext("2d"),
+            viewport
+        }).promise;
+
+        const img = document.createElement("img");
+        img.src = canvas.toDataURL("image/jpeg");
+
+        const pageDiv = document.createElement("div");
+        pageDiv.className = "page";
+        pageDiv.appendChild(img);
+
+        pages.push(pageDiv);
+    }
+
+    pageFlip = new St.PageFlip(
+        document.getElementById("flipbook"),
+        {
+            width: 450,
+            height: 650,
+
+            size: "stretch",
+
+            minWidth: 315,
+            maxWidth: 1000,
+
+            minHeight: 420,
+            maxHeight: 1350,
+
+            showCover: true,
+
+            mobileScrollSupport: false,
+
+            usePortrait: true,
+
+            maxShadowOpacity: 0.5,
+
+            flippingTime: 800
+        }
+    );
+
+    pageFlip.loadFromHTML(pages);
 });
+
+document
+    .getElementById("nextBtn")
+    .addEventListener("click", () => {
+
+        if(pageFlip){
+            pageFlip.flipNext();
+        }
+    });
+
+document
+    .getElementById("prevBtn")
+    .addEventListener("click", () => {
+
+        if(pageFlip){
+            pageFlip.flipPrev();
+        }
+    });
