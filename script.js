@@ -92,3 +92,31 @@ document
             pageFlip.flipPrev();
         }
     });
+
+
+const fullscreenBtn = document.getElementById("fullscreenBtn");
+const bookContainer = document.getElementById("book");
+
+fullscreenBtn.addEventListener("click", () => {
+
+    if (!document.fullscreenElement) {
+
+        if (bookContainer.requestFullscreen) {
+            bookContainer.requestFullscreen();
+        } else if (bookContainer.webkitRequestFullscreen) {
+            bookContainer.webkitRequestFullscreen();
+        } else if (bookContainer.msRequestFullscreen) {
+            bookContainer.msRequestFullscreen();
+        }
+
+    } else {
+
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        }
+    }
+});
