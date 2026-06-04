@@ -95,7 +95,7 @@ document
 
 
 const fullscreenBtn = document.getElementById("fullscreenBtn");
-const bookContainer = document.getElementById("book");
+const bookContainer = document.getElementById("flipbook");
 
 fullscreenBtn.addEventListener("click", () => {
 
